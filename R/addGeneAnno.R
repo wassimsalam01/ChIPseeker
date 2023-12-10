@@ -25,28 +25,53 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
 
     i <- which(!is.na(kk))
     kk <- gsub("\\.\\d+$", "", kk)
-    ann <- tryCatch(
-        suppressWarnings(select(annoDb,
-                                keys=unique(kk[i]),
-                                keytype=kt,
-                                columns=columns)),
+    
+    if (annoDb$packageName == "org.Dpulex.eg.db") {
+        Dpulex_kk <- as.vector(mapIds(annoDb,
+                                      keys=kk,
+                                      keytype = "SYMBOL",
+                                      column = "GID"))
+        ann <- tryCatch(
+        suppressWarnings(AnnotationDbi::select(annoDb,
+                                               keys=unique(Dpulex_kk[i]),
+                                               keytype=kt,
+                                               columns=columns)),
         error = function(e) NULL)
 
-    if (is.null(ann)) {
-        warning("ID type not matched, gene annotation will not be added...")
-        return(NA)
+        if (is.null(ann)) {
+            warning("ID type not matched, gene annotation will not be added...")
+            return(NA)
+        }
+        idx <- getFirstHitIndex(ann[,kt])
+        ann <- ann[idx,]
+        ann <- ann[-which(is.na(ann),]
+
+        rownames(ann) <- ann[, kt]
+        res <- ann[as.character(Dpulex_kk),]
+    } else {
+        ann <- tryCatch(
+        suppressWarnings(AnnotationDbi::select(annoDb,
+                                               keys=unique(kk[i]),
+                                               keytype=kt,
+                                               columns=columns)),
+        error = function(e) NULL)
+
+        if (is.null(ann)) {
+            warning("ID type not matched, gene annotation will not be added...")
+            return(NA)
+        }
+        idx <- getFirstHitIndex(ann[,kt])
+        ann <- ann[idx,]
+
+        ## idx <- unlist(sapply(kk, function(x) which(x==ann[,kt])))
+        ## res <- matrix(NA, ncol=ncol(ann), nrow=length(kk)) %>% as.data.frame
+        ## colnames(res) <- colnames(ann)
+        ## res[i,] <- ann[idx,]
+
+        rownames(ann) <- ann[, kt]
+        res <- ann[as.character(kk),]
     }
-    idx <- getFirstHitIndex(ann[,kt])
-    ann <- ann[idx,]
-
-    ## idx <- unlist(sapply(kk, function(x) which(x==ann[,kt])))
-    ## res <- matrix(NA, ncol=ncol(ann), nrow=length(kk)) %>% as.data.frame
-    ## colnames(res) <- colnames(ann)
-    ## res[i,] <- ann[idx,]
-
-    rownames(ann) <- ann[, kt]
-    res <- ann[as.character(kk),]
-
+    
     return(res)
 }
 
