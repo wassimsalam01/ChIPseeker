@@ -13,7 +13,7 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
     kk <- unlist(geneID)
     require(annoDb, character.only = TRUE)
     annoDb <- eval(parse(text=annoDb))
-
+  
     if (type == "Entrez Gene ID") {
         kt <- "ENTREZID"
     } else if (type =="Ensembl gene ID" || type == "Ensembl Gene ID") {
@@ -22,67 +22,62 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
         message("geneID type is not supported...\tPlease report it to developer...\n")
         return(NA)
     }
-
+  
     i <- which(!is.na(kk))
     kk <- gsub("\\.\\d+$", "", kk)
     
     if (annoDb$packageName == "org.Dpulex.eg.db") {
-        Dpulex_kk <- as.vector(mapIds(annoDb,
-                                      keys=kk,
-                                      keytype = "SYMBOL",
-                                      column = "GID"))
+        Dpulex_kk <- as.vector(AnnotationDbi::mapIds(annoDb,
+                                                     keys=kk,
+                                                     keytype = "SYMBOL",
+                                                     column = "GID"))
         ann <- tryCatch(
-        suppressWarnings(AnnotationDbi::select(annoDb,
-                                               keys=unique(Dpulex_kk[i]),
-                                               keytype=kt,
-                                               columns=columns)),
-        error = function(e) NULL)
-
+            suppressWarnings(AnnotationDbi::select(annoDb,
+                                                   keys=unique(Dpulex_kk[i]),
+                                                   keytype=kt,
+                                                   columns=columns)),
+            error = function(e) NULL)
         if (is.null(ann)) {
             warning("ID type not matched, gene annotation will not be added...")
             return(NA)
         }
         idx <- getFirstHitIndex(ann[,kt])
         ann <- ann[idx,]
-        ann <- ann[-which(is.na(ann),]
-
-        rownames(ann) <- ann[, kt]
-        res <- ann[as.character(Dpulex_kk),]
+        ann <- ann[-which(is.na(ann)),]
     } else {
         ann <- tryCatch(
-        suppressWarnings(AnnotationDbi::select(annoDb,
-                                               keys=unique(kk[i]),
-                                               keytype=kt,
-                                               columns=columns)),
-        error = function(e) NULL)
-
+            suppressWarnings(select(annoDb,
+                                    keys=unique(kk[i]),
+                                    keytype=kt,
+                                    columns=columns)),
+            error = function(e) NULL)
+        
         if (is.null(ann)) {
             warning("ID type not matched, gene annotation will not be added...")
             return(NA)
-        }
-        idx <- getFirstHitIndex(ann[,kt])
-        ann <- ann[idx,]
-
-        ## idx <- unlist(sapply(kk, function(x) which(x==ann[,kt])))
-        ## res <- matrix(NA, ncol=ncol(ann), nrow=length(kk)) %>% as.data.frame
-        ## colnames(res) <- colnames(ann)
-        ## res[i,] <- ann[idx,]
-
-        rownames(ann) <- ann[, kt]
-        res <- ann[as.character(kk),]
     }
+    idx <- getFirstHitIndex(ann[,kt])
+    ann <- ann[idx,]
     
-    return(res)
+    ## idx <- unlist(sapply(kk, function(x) which(x==ann[,kt])))
+    ## res <- matrix(NA, ncol=ncol(ann), nrow=length(kk)) %>% as.data.frame
+    ## colnames(res) <- colnames(ann)
+    ## res[i,] <- ann[idx,]
+    
+    rownames(ann) <- ann[, kt]
+    res <- ann[as.character(kk),]
+  }
+  
+  return(res)
 }
 
 
 addGeneAnno <- function(peak.gr, annoDb, type, columns) {
-    geneAnno <- getGeneAnno(annoDb, peak.gr$geneId, type, columns)
-    if (! all(is.na(geneAnno))) {
-        for(cn in colnames(geneAnno)[-1]) {
-            mcols(peak.gr)[[cn]] <- geneAnno[, cn]
-        }
+  geneAnno <- getGeneAnno(annoDb, peak.gr$geneId, type, columns)
+  if (! all(is.na(geneAnno))) {
+    for(cn in colnames(geneAnno)[-1]) {
+      mcols(peak.gr)[[cn]] <- geneAnno[, cn]
     }
-    return(peak.gr)
+  }
+  return(peak.gr)
 }
-
