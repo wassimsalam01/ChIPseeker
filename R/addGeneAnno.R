@@ -16,9 +16,10 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
   
     if (type == "Entrez Gene ID") {
         if (annoDb$packageName == "org.Dpulex.eg.db") {
-           kt <- "GID" 
+            kt <- "GID" 
+        } else {
+            kt <- "ENTREZID"   
         }
-        kt <- "ENTREZID"
     } else if (type =="Ensembl gene ID" || type == "Ensembl Gene ID") {
         kt <- "ENSEMBL"
     } else {
