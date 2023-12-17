@@ -15,6 +15,9 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
     annoDb <- eval(parse(text=annoDb))
   
     if (type == "Entrez Gene ID") {
+        if (annoDb$packageName == "org.Dpulex.eg.db") {
+           kt <- "GID" 
+        }
         kt <- "ENTREZID"
     } else if (type =="Ensembl gene ID" || type == "Ensembl Gene ID") {
         kt <- "ENSEMBL"
@@ -44,6 +47,10 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
         idx <- getFirstHitIndex(ann[,kt])
         ann <- ann[idx,]
         ann <- ann[-which(is.na(ann)),]
+        rownames(ann) <- ann[, kt]
+
+        return(ann)
+        
     } else {
         ann <- tryCatch(
             suppressWarnings(select(annoDb,
@@ -55,7 +62,7 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
         if (is.null(ann)) {
             warning("ID type not matched, gene annotation will not be added...")
             return(NA)
-    }
+        }
     idx <- getFirstHitIndex(ann[,kt])
     ann <- ann[idx,]
     
@@ -66,9 +73,8 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
     
     rownames(ann) <- ann[, kt]
     res <- ann[as.character(kk),]
+    return(res)
   }
-  
-  return(res)
 }
 
 
