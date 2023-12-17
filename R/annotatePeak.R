@@ -74,7 +74,7 @@ annotatePeak <- function(peak,
                          ignoreDownstream=FALSE,
                          overlap = "TSS",
                          verbose=TRUE,
-                         columns=c("ENTREZID", "ENSEMBL", "SYMBOL", "GENENAME")) {
+                         columns=c("GID", "SYMBOL", "GENENAME")) {
 
     is_GRanges_of_TxDb <- FALSE
     if (is(TxDb, "GRanges")) {
