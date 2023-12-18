@@ -27,17 +27,16 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
         return(NA)
     }
   
-    i <- which(!is.na(kk))
-    kk <- gsub("\\.\\d+$", "", kk)
     
     if (annoDb$packageName == "org.Dpulex.eg.db") {
-        Dpulex_kk <- as.vector(AnnotationDbi::mapIds(annoDb,
+        Dpulex_kk <- as.data.frame(AnnotationDbi::mapIds(annoDb,
                                                      keys=kk,
                                                      keytype = "SYMBOL",
-                                                     column = "GID"))
+                                                     column = "GID",
+                                                     multiVals = "CharacterList"))
         ann <- tryCatch(
             suppressWarnings(AnnotationDbi::select(annoDb,
-                                                   keys=unique(Dpulex_kk[i]),
+                                                   keys=Dpulex_kk[,3],
                                                    keytype=kt,
                                                    columns=columns)),
             error = function(e) NULL)
@@ -45,14 +44,15 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
             warning("ID type not matched, gene annotation will not be added...")
             return(NA)
         }
-        idx <- getFirstHitIndex(ann[,kt])
-        ann <- ann[idx,]
-        ann <- ann[-which(is.na(ann)),]
-        rownames(ann) <- ann[, kt]
 
+        ann$SYMBOL=Dpulex_kk[,2]
+        
         return(ann)
         
     } else {
+        i <- which(!is.na(kk))
+        kk <- gsub("\\.\\d+$", "", kk)
+        
         ann <- tryCatch(
             suppressWarnings(select(annoDb,
                                     keys=unique(kk[i]),
