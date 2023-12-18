@@ -34,6 +34,9 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
                                                      keytype = "SYMBOL",
                                                      column = "GID",
                                                      multiVals = "CharacterList"))
+        i <- which(!is.na(Dpulex_kk[,3]))
+        Dpulex_kk[,3] <- gsub("LOC", "", Dpulex_kk[,3])
+        
         ann <- tryCatch(
             suppressWarnings(AnnotationDbi::select(annoDb,
                                                    keys=Dpulex_kk[,3],
