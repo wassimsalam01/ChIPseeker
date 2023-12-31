@@ -29,17 +29,14 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
   
     
     if (annoDb$packageName == "org.Dpulex.eg.db") {
-        Dpulex_kk <- as.data.frame(AnnotationDbi::mapIds(annoDb,
-                                                     keys=kk,
-                                                     keytype = "SYMBOL",
-                                                     column = "GID",
-                                                     multiVals = "CharacterList"))
-        i <- which(!is.na(Dpulex_kk[,3]))
-        Dpulex_kk[,3] <- gsub("LOC", "", Dpulex_kk[,3])
+        Dpulex_kk <- AnnotationDbi::mapIds(annoDb,
+                                           keys=kk,
+                                           keytype = "SYMBOL",
+                                           column = "GID")
         
         ann <- tryCatch(
             suppressWarnings(AnnotationDbi::select(annoDb,
-                                                   keys=Dpulex_kk[,3],
+                                                   keys=Dpulex_kk,
                                                    keytype=kt,
                                                    columns=columns)),
             error = function(e) NULL)
@@ -48,8 +45,6 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
             return(NA)
         }
 
-        ann$SYMBOL=Dpulex_kk[,2]
-        
         return(ann)
         
     } else {
@@ -67,17 +62,17 @@ getGeneAnno <- function(annoDb, geneID, type, columns){
             warning("ID type not matched, gene annotation will not be added...")
             return(NA)
         }
-    idx <- getFirstHitIndex(ann[,kt])
-    ann <- ann[idx,]
+        idx <- getFirstHitIndex(ann[,kt])
+        ann <- ann[idx,]
     
-    ## idx <- unlist(sapply(kk, function(x) which(x==ann[,kt])))
-    ## res <- matrix(NA, ncol=ncol(ann), nrow=length(kk)) %>% as.data.frame
-    ## colnames(res) <- colnames(ann)
-    ## res[i,] <- ann[idx,]
-    
-    rownames(ann) <- ann[, kt]
-    res <- ann[as.character(kk),]
-    return(res)
+        ## idx <- unlist(sapply(kk, function(x) which(x==ann[,kt])))
+        ## res <- matrix(NA, ncol=ncol(ann), nrow=length(kk)) %>% as.data.frame
+        ## colnames(res) <- colnames(ann)
+        ## res[i,] <- ann[idx,]
+        
+        rownames(ann) <- ann[, kt]
+        res <- ann[as.character(kk),]
+        return(res)
   }
 }
 
