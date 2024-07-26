@@ -1,5 +1,6 @@
 citHeader("Please cite Q. Wang (2022) or G. Yu (2015) for using ChIPseeker. In addition, please cite clusterProfiler/DOSE/ReactomePA when using functional enrichment analyses.")
 
+refs <- yulab.utils:::ref_knowledge()
 
 citEntry(entry  ="ARTICLE",
          title  = "Exploring epigenomic datasets by ChIPseeker",
@@ -24,9 +25,7 @@ citEntry(entry  ="ARTICLE",
          PMID    = "36286622",
          doi     = "10.1002/cpz1.585",
          url     = "https://onlinelibrary.wiley.com/share/author/GYJGUBYCTRMYJFN2JFZZ?target=10.1002/cpz1.585",
-         textVersion = paste("Qianwen Wang, Ming Li, Tianzhi Wu, Li Zhan, Lin Li, Meijun Chen, Wenqin Xie, Zijing Xie, Erqiang Hu, Shuangbin Xu, Guangchuang Yu.",
-         "Exploring epigenomic datasets by ChIPseeker.",
-         "Current Protocols 2022, 2(10): e585")
+         textVersion = refs['ChIPseeker_CP']
          )
 
 
@@ -44,7 +43,5 @@ citEntry(entry  ="ARTICLE",
          pages   = "2382-2383",
          PMID    = "25765347",
          doi     = "10.1093/bioinformatics/btv145",
-         textVersion = paste("Guangchuang Yu, Li-Gen Wang, and Qing-Yu He.",
-             "ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization.",
-             "Bioinformatics 2015, 31(14):2382-2383")
+         textVersion = refs['ChIPseeker']
          )
