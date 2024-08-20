@@ -11,7 +11,7 @@ This package implements functions to retrieve the nearest genes around the peak,
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://onlinelibrary.wiley.com/share/author/GYJGUBYCTRMYJFN2JFZZ?target=10.1002/cpz1.585}
+  \item \url{https://yulab-smu.top/contribution-knowledge-mining/}
   \item Report bugs at \url{https://github.com/YuLab-SMU/ChIPseeker/issues}
 }
 

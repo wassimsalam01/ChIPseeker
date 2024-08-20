@@ -1,4 +1,4 @@
-# ChIPseeker 1.41.0.001
+# ChIPseeker 1.41.1
 
 + use `yulab.utils::yulab_msg()` for startup message (2024-07-26, Fri)
 
