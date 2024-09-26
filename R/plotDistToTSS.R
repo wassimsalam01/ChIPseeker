@@ -1,3 +1,42 @@
+merge_two_si = function(x1, x2){
+  if (length(unique(gsub("^[0-9]+","",c(x1, x2)))) == 1){
+    return(paste0(gsub("[^0-9]*$","",x1), "-", x2))
+  } else {
+    return(paste0(x1, "-", x2))
+  }
+}
+
+generate_break_lbs = function(breaks) {
+  lbs <- c()
+  
+  # break labels
+  break_labels = scales::label_number(scale_cut = scales::cut_si(unit = "b"))(breaks)
+  break_labels = gsub(" b$"," bp", break_labels)
+
+  # category labels
+  for (i in 2:length(breaks)) {
+    if (i == length(breaks)) {
+      lbs <- c(lbs, paste0(">", break_labels[i-1]))
+    } else {
+      lbs <- c(lbs, merge_two_si(break_labels[i-1], break_labels[i]))
+    }
+  }
+  
+  return(lbs)
+}
+
+generate_colors = function(palette_name = "Reds", n) {
+  brewer_palette = RColorBrewer::brewer.pal(
+    name = palette_name, 
+    n = min(RColorBrewer::brewer.pal.info[palette_name, "maxcolors"], n)
+  )
+  
+  color_func = grDevices::colorRampPalette(rev(brewer_palette))
+  cols = color_func(n)
+  
+  return(cols)
+}
+
 ##' plot feature distribution based on the distances to the TSS
 ##'
 ##'
