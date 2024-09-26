@@ -1,14 +1,15 @@
-
 ##' plot feature distribution based on the distances to the TSS
 ##'
 ##'
 ##' @title plotDistToTSS.data.frame
 ##' @param peakDist peak annotation
 ##' @param distanceColumn column name of the distance from peak to nearest gene
+##' @param distanceBreaks default is 'c(0, 1000, 3000, 5000, 10000, 100000)'
+##' @param palette palette name for coloring different distances. Run `RColorBrewer::display.brewer.all()` to see all applicable values.
 ##' @param xlab x label
 ##' @param ylab y lable
 ##' @param title figure title
-##' @param categoryColumn category column
+##' @param categoryColumn category column, default is ".id"
 ##' @return bar plot that summarize distance from peak to
 ##' TSS of the nearest gene.
 ##' @importFrom magrittr %<>%
@@ -41,42 +42,36 @@
 ##' @author Guangchuang Yu \url{https://guangchuangyu.github.io}
 plotDistToTSS.data.frame <- function(peakDist,
                                      distanceColumn="distanceToTSS",
+                                     distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
+                                     palette = "Reds",
                                      xlab="",
                                      ylab="Binding sites (%) (5'->3')",
                                      title="Distribution of transcription factor-binding loci relative to TSS",
-                                     categoryColumn) {
+                                     categoryColumn = ".id") {
 
-    ## to satisfy codetools
-    Feature <- freq <- .id <- NULL
-
-    ## assign Feature according to the distancetoFeature
-    peakDist$Feature <- NA
-    limit <- c(0, 1000, 3000, 5000, 10000, 100000)
-    lbs <- c("0-1kb", "1-3kb", "3-5kb", "5-10kb", "10-100kb", ">100kb")
-    for (i in 1:length(limit)) {
-        if (i < length(limit)) {
-            peakDist$Feature[ abs(peakDist[, distanceColumn]) >= limit[i] & abs(peakDist[,distanceColumn]) < limit[i+1] ] <- lbs[i]
-	} else {
-            peakDist$Feature[abs(peakDist[,distanceColumn]) > limit[i]] <- lbs[i]
-	}
-    }
-    peakDist$Feature <- factor(peakDist$Feature, levels=lbs)
+    distanceBreaks = sort(distanceBreaks)
+    hasZero = sum(distanceBreaks == 0)
+    if (!hasZero) distanceBreaks = c(0, distanceBreaks)
+    hasInf = sum(is.infinite(distanceBreaks))
+    if (!hasInf) distanceBreaks = c(distanceBreaks, Inf)
+    lbs = generate_break_lbs(distanceBreaks)
+    peakDist$Feature = cut(abs(peakDist[[distanceColumn]]), 
+                           breaks = distanceBreaks,
+                           labels = lbs,
+                           include.lowest = TRUE)
 
     ## sign containing -1 and 1 for upstream and downstream
     peakDist$sign <- sign(peakDist[,distanceColumn])
 
     ## count frequencies
     if (categoryColumn == 1) {
-        peakDist %<>% group_by(Feature, sign) %>%
-            summarise(freq = length(Feature))
-
-        peakDist$freq = peakDist$freq/sum(peakDist$freq)
-        peakDist$freq = peakDist$freq * 100
+      peakDist = peakDist |> 
+        summarise(freq = length(Feature), .by = c("Feature", "sign")) |> 
+        mutate(freq = freq/sum(freq) * 100)
     } else {
-        peakDist %<>% group_by(.id, Feature, sign) %>%
-            summarise(freq = length(Feature)) %>%
-                group_by(.id) %>%
-                    mutate(freq = freq/sum(freq) * 100)
+      peakDist = peakDist |> 
+        summarise(freq = length(Feature), .by = c(categoryColumn,"Feature","sign")) |> 
+        mutate(freq = freq/sum(freq) * 100, .by = categoryColumn)
     }
 
     if (any(peakDist$sign == 0)) {
@@ -131,12 +126,8 @@ plotDistToTSS.data.frame <- function(peakDist,
         p <- p + scale_x_continuous(breaks=NULL)
     }
 
-    cols <- c("#9ecae1", "#3182bd", "#C7A76C", "#86B875", "#39BEB1", "#CD99D8")
-    ## p <- p + scale_fill_hue("Feature", breaks=lbs, labels=lbs)
-    ## p <- p + scale_fill_manual(values=getCols(length(lbs)), breaks=lbs, labels=lbs)
-    p <- p + scale_fill_manual(values=rev(cols), breaks=rev(lbs), labels=rev(lbs), guide=guide_legend(reverse=TRUE))
+    cols <- generate_colors(palette_name = palette, n = length(lbs))
+    p <- p + scale_fill_manual(values=rev(cols), guide=guide_legend(reverse=TRUE))
 
     return(p)
 }
-
-
