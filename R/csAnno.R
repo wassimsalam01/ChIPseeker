@@ -365,7 +365,8 @@ setMethod("plotDistToTSS", signature(x="list"),
               peakDist <- list_to_dataframe(peakAnno)
               categoryColumn <- ".id"
               plotDistToTSS.data.frame(peakDist, distanceColumn = distanceColumn,
-                                       xlab = xlab, ylab = ylab, title = title, categoryColumn = categoryColumn, ...)
+                                       distanceBreaks = distanceBreaks, palette = palette,
+                                       xlab = xlab, ylab = ylab, title = title, categoryColumn = categoryColumn)
           })
 
 
