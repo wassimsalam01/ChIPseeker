@@ -7,7 +7,7 @@ merge_two_si = function(x1, x2){
 }
 
 generate_break_lbs = function(breaks) {
-  lbs <- c()
+  lbs = c()
   
   # break labels
   break_labels = scales::label_number(scale_cut = scales::cut_si(unit = "b"))(breaks)
@@ -16,29 +16,34 @@ generate_break_lbs = function(breaks) {
   # category labels
   for (i in 2:length(breaks)) {
     if (i == length(breaks)) {
-      lbs <- c(lbs, paste0(">", break_labels[i-1]))
+      lbs = c(lbs, paste0(">", break_labels[i-1]))
     } else {
-      lbs <- c(lbs, merge_two_si(break_labels[i-1], break_labels[i]))
+      lbs = c(lbs, merge_two_si(break_labels[i-1], break_labels[i]))
     }
   }
   
   return(lbs)
 }
 
-generate_colors <- function(palette, n) {
+generate_colors = function(
+    palette = NULL, 
+    n) {
   if (length(palette) == 1){
     brewer_cols = RColorBrewer::brewer.pal(
       name = palette, 
-      n = min(RColorBrewer::brewer.pal.info[palette, "maxcolors"], n)
-    )
+      n = RColorBrewer::brewer.pal.info[palette, "maxcolors"]
+    ) |> rev()
   } else if (length(palette) > 1){
     brewer_cols = palette
   } else {
     brewer_cols = c("#9ecae1", "#3182bd", "#C7A76C", "#86B875", "#39BEB1", "#CD99D8")
   }
   
-  color_func <- grDevices::colorRampPalette(rev(brewer_cols))
-  cols <- color_func(n)
+  if (length(brewer_cols) >= n) {
+    cols = brewer_cols[1:length(brewer_cols)]
+  } else {
+    cols = grDevices::colorRampPalette(brewer_cols)(n)
+  }
   
   return(cols)
 }
