@@ -29,7 +29,7 @@ generate_colors <- function(palette, n) {
   if (length(palette) == 1){
     brewer_cols = RColorBrewer::brewer.pal(
       name = palette, 
-      n = min(RColorBrewer::brewer.pal.info[palette_name, "maxcolors"], n)
+      n = min(RColorBrewer::brewer.pal.info[palette, "maxcolors"], n)
     )
   } else if (length(palette) > 1){
     brewer_cols = palette
