@@ -364,8 +364,8 @@ setMethod("plotDistToTSS", signature(x="list"),
               ## peakDist <- ldply(peakAnno)
               peakDist <- list_to_dataframe(peakAnno)
               categoryColumn <- ".id"
-              plotDistToTSS.data.frame(peakDist, distanceColumn,
-                                       xlab, ylab, title, categoryColumn)
+              plotDistToTSS.data.frame(peakDist, distanceColumn = distanceColumn,
+                                       xlab = xlab, ylab = ylab, title = title, categoryColumn = categoryColumn, ...)
           })
 
 
@@ -377,6 +377,8 @@ setMethod("plotDistToTSS", signature(x="list"),
 ##' @aliases plotDistToTSS,csAnno,ANY-method
 ##' @title plotDistToTSS method
 ##' @param distanceColumn distance column name
+##' @param distanceBreaks breaks of distance, default is 'c(0, 1000, 3000, 5000, 10000, 100000)'
+##' @param palette palette name for coloring different distances. Run `RColorBrewer::display.brewer.all()` to see all applicable values.
 ##' @param x \code{csAnno} instance
 ##' @param xlab xlab
 ##' @param ylab ylab
@@ -390,11 +392,13 @@ setMethod("plotDistToTSS", signature(x="list"),
 ##' @author Guangchuang Yu \url{https://guangchuangyu.github.io}
 setMethod("plotDistToTSS", signature(x="csAnno"),
           function(x, distanceColumn="distanceToTSS",
+                                     distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
+                                     palette = "Reds",
                                      xlab="", ylab="Binding sites (%) (5'->3')",
                                      title="Distribution of transcription factor-binding loci relative to TSS", ...) {
               peakDist <- as.data.frame(x)
               categoryColumn <- 1
-              plotDistToTSS.data.frame(peakDist, distanceColumn,
-                                       xlab, ylab, title, categoryColumn)
+              plotDistToTSS.data.frame(peakDist, distanceColumn = distanceColumn, distanceBreaks = distanceBreaks, palette = palette,
+                                       xlab = xlab, ylab = ylab, title = title, categoryColumn = categoryColumn)
           })
 
