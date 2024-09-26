@@ -25,14 +25,20 @@ generate_break_lbs = function(breaks) {
   return(lbs)
 }
 
-generate_colors = function(palette_name = "Reds", n) {
-  brewer_palette = RColorBrewer::brewer.pal(
-    name = palette_name, 
-    n = min(RColorBrewer::brewer.pal.info[palette_name, "maxcolors"], n)
-  )
+generate_colors <- function(palette, n) {
+  if (length(palette) == 1){
+    brewer_cols = RColorBrewer::brewer.pal(
+      name = palette, 
+      n = min(RColorBrewer::brewer.pal.info[palette_name, "maxcolors"], n)
+    )
+  } else if (length(palette) > 1){
+    brewer_cols = palette
+  } else {
+    brewer_cols = c("#9ecae1", "#3182bd", "#C7A76C", "#86B875", "#39BEB1", "#CD99D8")
+  }
   
-  color_func = grDevices::colorRampPalette(rev(brewer_palette))
-  cols = color_func(n)
+  color_func <- grDevices::colorRampPalette(rev(brewer_cols))
+  cols <- color_func(n)
   
   return(cols)
 }
@@ -82,7 +88,7 @@ generate_colors = function(palette_name = "Reds", n) {
 plotDistToTSS.data.frame <- function(peakDist,
                                      distanceColumn="distanceToTSS",
                                      distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
-                                     palette = "Reds",
+                                     palette = NULL,
                                      xlab="",
                                      ylab="Binding sites (%) (5'->3')",
                                      title="Distribution of transcription factor-binding loci relative to TSS",
