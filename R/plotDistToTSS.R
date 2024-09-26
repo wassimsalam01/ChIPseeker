@@ -171,7 +171,7 @@ plotDistToTSS.data.frame <- function(peakDist,
         p <- p + scale_x_continuous(breaks=NULL)
     }
 
-    cols <- generate_colors(palette_name = palette, n = length(lbs))
+    cols <- generate_colors(palette = palette, n = length(lbs))
     p <- p + scale_fill_manual(values=rev(cols), guide=guide_legend(reverse=TRUE))
 
     return(p)
