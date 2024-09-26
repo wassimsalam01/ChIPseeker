@@ -351,6 +351,8 @@ setMethod("plotAnnoPie", signature(x="csAnno"),
 ##' @exportMethod plotDistToTSS
 setMethod("plotDistToTSS", signature(x="list"),
           function(x, distanceColumn="distanceToTSS",
+                      distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
+                      palette = "Reds",
                                      xlab="", ylab="Binding sites (%) (5'->3')",
                                      title="Distribution of transcription factor-binding loci relative to TSS", ...) {
               if (is.null(names(x))) {
