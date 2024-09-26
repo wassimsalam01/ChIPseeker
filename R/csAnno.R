@@ -351,10 +351,10 @@ setMethod("plotAnnoPie", signature(x="csAnno"),
 ##' @exportMethod plotDistToTSS
 setMethod("plotDistToTSS", signature(x="list"),
           function(x, distanceColumn="distanceToTSS",
-                      distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
-                      palette = "Reds",
                                      xlab="", ylab="Binding sites (%) (5'->3')",
-                                     title="Distribution of transcription factor-binding loci relative to TSS", ...) {
+                                     title="Distribution of transcription factor-binding loci relative to TSS",                       
+                     distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
+                     palette = "Reds", ...) {
               if (is.null(names(x))) {
                   nn <- paste0("Peak", seq_along(x))
                   warning("input is not a named list, set the name automatically to ", paste(nn, collapse = " "))
@@ -395,10 +395,10 @@ setMethod("plotDistToTSS", signature(x="list"),
 ##' @author Guangchuang Yu \url{https://guangchuangyu.github.io}
 setMethod("plotDistToTSS", signature(x="csAnno"),
           function(x, distanceColumn="distanceToTSS",
-                                     distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
-                                     palette = "Reds",
                                      xlab="", ylab="Binding sites (%) (5'->3')",
-                                     title="Distribution of transcription factor-binding loci relative to TSS", ...) {
+                                     title="Distribution of transcription factor-binding loci relative to TSS", 
+                                     distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
+                                     palette = "Reds",...) {
               peakDist <- as.data.frame(x)
               categoryColumn <- 1
               plotDistToTSS.data.frame(peakDist, distanceColumn = distanceColumn, distanceBreaks = distanceBreaks, palette = palette,
