@@ -1,17 +1,18 @@
 # extend filter to Peak (GRanges class object)
 #' @method filter GRanges
 #' @export
-filter.GRanges <- function(.data, ..., .by = NULL, .preserve = FALSE) {
+filter.GRanges = function(.data, ..., .by = NULL, .preserve = FALSE) {
   dots = rlang::quos(...)
   as.data.frame(.data) |> 
     dplyr::filter(!!!dots, .by = .by, .preserve = .preserve) |> 
+    droplevels() |> 
     GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE)
 }
 
 # extend mutate to Peak (GRanges class object)
 #' @method mutate GRanges
 #' @export
-mutate.GRanges <- function(.data, ..., .by = NULL, 
+mutate.GRanges = function(.data, ..., .by = NULL, 
                            .keep = c("all", "used", "unused", "none"),
                            .before = NULL,
                            .after = NULL) {
