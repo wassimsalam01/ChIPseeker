@@ -79,6 +79,7 @@ The datasets _CBX6_ and _CBX7_ in this vignettes were downloaded from _GEO (GSE4
 files <- getSampleFiles()
 print(files)
 peak <- readPeakFile(files[[4]])
+peak
 ```
 
 ## ChIP peaks coverage plot
