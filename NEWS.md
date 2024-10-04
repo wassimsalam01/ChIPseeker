@@ -1,3 +1,11 @@
+# ChIPseeker 1.41.3
+
++ Extend dplyr verbs (`filter()`, `mutate()`, `arrange()`, `rename()`) to peak (`GRanges` object or `data.frame`), see #242.
+
+# ChIPseeker 1.41.2
+
++ Enhancement of `plotDistToTSS()`, see #241.
+
 # ChIPseeker 1.41.1
 
 + use `yulab.utils::yulab_msg()` for startup message (2024-07-26, Fri)
