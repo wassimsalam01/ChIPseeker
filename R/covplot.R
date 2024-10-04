@@ -60,7 +60,7 @@ covplot <- function(peak, weightCol=NULL,
         
         ## p <- p + geom_segment(aes(x=start, y=0, xend=end, yend= value))
         if (isList) {
-            if (length(fill_color) == length(peak)){
+            if (length(fill_color) == length(peak) && all(is_valid_color(fill_color))){
                 cols = fill_color
             } else {
                 cols = generate_colors(fill_color, n = length(peak))
