@@ -1,5 +1,6 @@
 # extend filter to Peak (GRanges class object)
 #' @method filter GRanges
+#' @export
 filter.GRanges <- function(.data, ..., .by = NULL, .preserve = FALSE) {
   dots = rlang::quos(...)
   as.data.frame(.data) |> 
@@ -9,6 +10,7 @@ filter.GRanges <- function(.data, ..., .by = NULL, .preserve = FALSE) {
 
 # extend mutate to Peak (GRanges class object)
 #' @method mutate GRanges
+#' @export
 mutate.GRanges <- function(.data, ..., .by = NULL, 
                            .keep = c("all", "used", "unused", "none"),
                            .before = NULL,
@@ -35,6 +37,7 @@ mutate.GRanges <- function(.data, ..., .by = NULL,
 }
 
 #' @method rename GRanges
+#' @export
 rename.GRanges = function(.data, ...){
   dots = rlang::quos(...)
   as.data.frame(.data) |> 
@@ -43,6 +46,7 @@ rename.GRanges = function(.data, ...){
 }
 
 #' @method arrange GRanges
+#' @export
 arrange.GRanges = function(.data, ..., .by_group = FALSE){
   dots = rlang::quos(...)
   as.data.frame(.data) |> 
