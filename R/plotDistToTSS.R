@@ -25,18 +25,22 @@ generate_break_lbs = function(breaks) {
   return(lbs)
 }
 
-generate_colors = function(
-    palette = NULL, 
-    n) {
-  if (length(palette) == 1){
+generate_colors = function(palette = NULL, n) {
+  # old color in version <= 1.41.1
+  old_color = c("#9ecae1", "#3182bd", "#C7A76C", "#86B875", "#39BEB1", "#CD99D8")
+  if (is.null(palette)){
+    brewer_cols = old_color
+  } else if (length(palette) == 1 && is_valid_palette(palette)){
     brewer_cols = RColorBrewer::brewer.pal(
       name = palette, 
       n = RColorBrewer::brewer.pal.info[palette, "maxcolors"]
-    ) |> rev()
-  } else if (length(palette) > 1){
+    ) |> rev()     
+  } else if (all(is_valid_color(palette))){
     brewer_cols = palette
-  } else {
-    brewer_cols = c("#9ecae1", "#3182bd", "#C7A76C", "#86B875", "#39BEB1", "#CD99D8")
+  }
+  else {
+    warning("Your palette is non-valid, switching to default...")
+    brewer_cols = old_color
   }
   
   if (length(brewer_cols) >= n) {
@@ -46,6 +50,19 @@ generate_colors = function(
   }
   
   return(cols)
+}
+
+is_valid_palette = function(palette){
+  palette %in% rownames(RColorBrewer::brewer.pal.info)
+}
+
+is_valid_color = function(color){
+  tryCatch({
+    grDevices::col2rgb(color)
+    TRUE
+  }, error = function(e) {
+    FALSE
+  })
 }
 
 ##' plot feature distribution based on the distances to the TSS
