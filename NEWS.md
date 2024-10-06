@@ -1,10 +1,7 @@
-# ChIPseeker 1.41.4
+# ChIPseeker 1.41.3
 
 + Better `covplot()`. Support universal chromosome names, and keep the default order of multiple peaks when plot a list of `GRanges` object.
 + Robust `generate_colors()`. Edit the logical of decision, and can validate color code automatically.
-
-# ChIPseeker 1.41.3
-
 + Extend dplyr verbs (`filter()`, `mutate()`, `arrange()`, `rename()`) to peak (`GRanges` object or `data.frame`), see #242.
 
 # ChIPseeker 1.41.2
