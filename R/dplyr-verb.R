@@ -39,11 +39,13 @@ mutate.GRanges = function(.data, ..., .by = NULL,
     GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE)
 }
 
+# S4Vectors::rename
 #' @method rename GRanges
+#' @importFrom rlang quos
 #' @export
-rename.GRanges = function(.data, ...){
+rename.GRanges = function(x, ...){
   dots = rlang::quos(...)
-  as.data.frame(.data) |> 
+  as.data.frame(x) |> 
     dplyr::rename(!!!dots) |> 
     GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE)
 }

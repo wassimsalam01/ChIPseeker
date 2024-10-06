@@ -97,6 +97,7 @@ is_valid_color = function(color){
 ##' @importFrom ggplot2 scale_fill_hue
 ##' @importFrom ggplot2 scale_fill_manual
 ##' @importFrom ggplot2 geom_text
+##' @importFrom rlang .data
 ##' @examples
 ##' \dontrun{
 ##' require(TxDb.Hsapiens.UCSC.hg19.knownGene)
@@ -133,12 +134,12 @@ plotDistToTSS.data.frame <- function(peakDist,
     ## count frequencies
     if (categoryColumn == 1) {
       peakDist = peakDist |> 
-        summarise(freq = length(Feature), .by = c("Feature", "sign")) |> 
-        mutate(freq = freq/sum(freq) * 100)
+        summarise(freq = length(.data$Feature), .by = c("Feature", "sign")) |> 
+        mutate(freq = .data$freq/sum(.data$freq) * 100)
     } else {
       peakDist = peakDist |> 
-        summarise(freq = length(Feature), .by = c(categoryColumn,"Feature","sign")) |> 
-        mutate(freq = freq/sum(freq) * 100, .by = categoryColumn)
+        summarise(freq = length(.data$Feature), .by = c(categoryColumn, "Feature", "sign")) |> 
+        mutate(freq = .data$freq/sum(.data$freq) * 100, .by = categoryColumn)
     }
 
     if (any(peakDist$sign == 0)) {
@@ -151,16 +152,16 @@ plotDistToTSS.data.frame <- function(peakDist,
     }
 
     if (categoryColumn == 1) {
-        peakDist %<>% group_by(Feature, sign) %>%
-            summarise(freq = sum(freq))
+        peakDist %<>% group_by(.data$Feature, .data$sign) %>%
+            summarise(freq = sum(.data$freq))
 
-        totalFreq <- peakDist %>% group_by(sign) %>%
-            summarise(total = sum(freq))
+        totalFreq <- peakDist %>% group_by(.data$sign) %>%
+            summarise(total = sum(.data$freq))
     } else {
-        peakDist %<>% group_by(.id, Feature, sign) %>%
-            summarise(freq = sum(freq))
-        totalFreq <- peakDist %>% group_by(.id, sign) %>%
-            summarise(total = sum(freq))
+        peakDist %<>% group_by(.data$.id, .data$Feature, .data$sign) %>%
+            summarise(freq = sum(.data$freq))
+        totalFreq <- peakDist %>% group_by(.data$.id, .data$sign) %>%
+            summarise(total = sum(.data$freq))
     }
 
 
@@ -175,13 +176,13 @@ plotDistToTSS.data.frame <- function(peakDist,
 
     peakDist$Feature <- factor(peakDist$Feature, levels=rev(levels(peakDist$Feature)))
     if (categoryColumn == 1) {
-        p <- ggplot(peakDist, aes(x=1, fill=Feature))
+        p <- ggplot(peakDist, aes(x=1, fill=.data$Feature))
     } else {
-        p <- ggplot(peakDist, aes_string(x=categoryColumn, fill="Feature"))
+        p <- ggplot(peakDist, aes(x=.data[[categoryColumn]], fill=.data$Feature))
     }
 
-    p <- p + geom_bar(data=subset(peakDist, sign==1), aes(y=freq), stat="identity") +
-        geom_bar(data=subset(peakDist, sign==-1), aes(y=-freq), stat="identity")
+    p <- p + geom_bar(data=subset(peakDist, sign==1), aes(y=.data$freq), stat="identity") +
+        geom_bar(data=subset(peakDist, sign==-1), aes(y=-.data$freq), stat="identity")
 
     p <- p + geom_hline(yintercept = 0, colour = "black") +
         coord_flip() + theme_bw() +
