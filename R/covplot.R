@@ -157,7 +157,7 @@ getChrCov <- function(peak, weightCol, chrs, xlim, lower=1) {
     return(df2)
 }
 
-# @param ... other args to `str_sort()`
+# a simple `stringr::str_sort(numeric=TRUE)` implementation
 sortChrName <- function(chr.name, decreasing = FALSE) {
     ## universal sort function, support organisms other than human
     chr_part <- sub("^(\\D*)(\\d*)$", "\\1", chr.name)
