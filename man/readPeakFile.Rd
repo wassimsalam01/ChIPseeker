@@ -11,7 +11,7 @@ readPeakFile(peakfile, as = "GRanges", ...)
 
 \item{as}{output format, one of GRanges or data.frame}
 
-\item{...}{additional parameter}
+\item{...}{additional parameter (pass to `utils::read.delim()`)}
 }
 \value{
 peak information, in GRanges or data.frame object

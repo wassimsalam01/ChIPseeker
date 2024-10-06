@@ -13,7 +13,7 @@ covplot(
   chrs = NULL,
   xlim = NULL,
   lower = 1,
-  fill_color = NULL
+  fill_color = "black"
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ covplot(
 
 \item{lower}{lower cutoff of coverage signal}
 
-\item{fill_color}{specify the color for the plot. Order matters}
+\item{fill_color}{specify the color/palette for the plot. Order matters}
 }
 \value{
 ggplot2 object

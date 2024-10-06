@@ -2,16 +2,17 @@ Package: ChIPseeker
 Type: Package
 Title: ChIPseeker for ChIP peak Annotation, Comparison, and Visualization
 Version: 1.41.3
-Authors@R: c( person(given = "Guangchuang", family = "Yu",       email = "guangchuangyu@gmail.com",      role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
-              person(given = "Ming",        family = "Li",       email = "limiang929@gmail.com",         role = "ctb"),
-              person(given = "Qianwen",        family = "Wang",       email = "treywea@gmail.com",         role = "ctb"),
-              person(given = "Yun",         family = "Yan",      email = "youryanyun@gmail.com",         role = "ctb"),
-              person(given = "Hervé",       family = "Pagès",    email = "hpages.on.github@gmail.com",   role  = "ctb"),
-              person(given = "Michael",     family = "Kluge",    email = "michael.kluge@bio.ifi.lmu.de", role  = "ctb"),
-              person(given = "Thomas",      family = "Schwarzl", email = "schwarzl@embl.de",             role  = "ctb"),
-              person(given = "Zhougeng",    family = "Xu",       email = "xuzhougeng@163.com",           role  = "ctb"),
-	      person(given = "Chun-Hui",    family = "Gao",      email="gaospecial@gmail.com",           role  = "ctb", comment=c(ORCID = "0000-0002-1445-7939"))
-	    )
+Authors@R: c( 
+    person(given = "Guangchuang", family = "Yu",       email = "guangchuangyu@gmail.com",      role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
+    person(given = "Ming",        family = "Li",       email = "limiang929@gmail.com",         role = "ctb"),
+    person(given = "Qianwen",     family = "Wang",     email = "treywea@gmail.com",            role = "ctb"),
+    person(given = "Yun",         family = "Yan",      email = "youryanyun@gmail.com",         role = "ctb"),
+    person(given = "Hervé",       family = "Pagès",    email = "hpages.on.github@gmail.com",   role  = "ctb"),
+    person(given = "Michael",     family = "Kluge",    email = "michael.kluge@bio.ifi.lmu.de", role  = "ctb"),
+    person(given = "Thomas",      family = "Schwarzl", email = "schwarzl@embl.de",             role  = "ctb"),
+    person(given = "Zhougeng",    family = "Xu",       email = "xuzhougeng@163.com",           role  = "ctb"),
+	person(given = "Chun-Hui",    family = "Gao",      email="gaospecial@gmail.com",           role  = "ctb", comment=c(ORCID = "0000-0002-1445-7939"))
+	)
 Maintainer: Guangchuang Yu <guangchuangyu@gmail.com>
 Description: This package implements functions to retrieve the nearest genes
     around the peak, annotate genomic region of the peak, statstical methods
@@ -27,6 +28,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     AnnotationDbi,
+    aplot,
     BiocGenerics,
     boot,
     enrichplot,
@@ -49,11 +51,10 @@ Imports:
     rtracklayer,
     S4Vectors,
     stats,
+    tibble,
     TxDb.Hsapiens.UCSC.hg19.knownGene,
     utils,
-    aplot,
-    yulab.utils (>= 0.1.5),
-    tibble
+    yulab.utils (>= 0.1.5)
 Suggests:
     clusterProfiler,
     ggimage,

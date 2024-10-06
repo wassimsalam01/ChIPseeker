@@ -28,6 +28,7 @@ Other contributors:
   \item Michael Kluge \email{michael.kluge@bio.ifi.lmu.de} [contributor]
   \item Thomas Schwarzl \email{schwarzl@embl.de} [contributor]
   \item Zhougeng Xu \email{xuzhougeng@163.com} [contributor]
+  \item Chun-Hui Gao \email{gaospecial@gmail.com} (\href{https://orcid.org/0000-0002-1445-7939}{ORCID}) [contributor]
 }
 
 }

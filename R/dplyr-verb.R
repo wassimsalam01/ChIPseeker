@@ -40,7 +40,6 @@ mutate.GRanges = function(.data, ..., .by = NULL,
 }
 
 #' @method rename GRanges
-#' @importFrom dplyr rename
 #' @export
 rename.GRanges = function(.data, ...){
   dots = rlang::quos(...)

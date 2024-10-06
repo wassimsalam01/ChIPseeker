@@ -20,7 +20,10 @@
 
 + Bioconductor RELEASE_3_18 (2023-10-25, Wed)
 
-# ChIPseeker\n\n+ Bioconductor RELEASE_3_17 (2023-05-03, Wed)\n
+# ChIPseeker 1.36.0
+
++ Bioconductor RELEASE_3_17 (2023-05-03, Wed)
+
 # ChIPseeker 1.35.3
 
 + fixed R check by removing calling `BiocStyle::Biocpkg()` in vignette, instead we use `yulab.utils::Biocpkg()` (2023-04-11, Tue)
