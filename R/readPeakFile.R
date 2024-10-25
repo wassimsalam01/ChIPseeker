@@ -4,7 +4,7 @@
 ##' @title readPeakFile
 ##' @param peakfile peak file
 ##' @param as output format, one of GRanges or data.frame
-##' @param ... additional parameter
+##' @param ... additional parameter (pass to `utils::read.delim()`)
 ##' @return peak information, in GRanges or data.frame object
 ##' @import IRanges GenomicRanges
 ##' @export

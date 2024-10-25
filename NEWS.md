@@ -1,8 +1,29 @@
+# ChIPseeker 1.41.3
+
++ Better `covplot()`. Support universal chromosome names, and keep the default order of multiple peaks when plot a list of `GRanges` object.
++ Robust `generate_colors()`. Edit the logical of decision, and can validate color code automatically.
++ Extend dplyr verbs (`filter()`, `mutate()`, `arrange()`, `rename()`) to peak (`GRanges` object or `data.frame`), see #242.
+
+# ChIPseeker 1.41.2
+
++ Enhancement of `plotDistToTSS()`, see #241.
+
+# ChIPseeker 1.41.1
+
++ use `yulab.utils::yulab_msg()` for startup message (2024-07-26, Fri)
+
+# ChIPseeker 1.40.0
+
++ Bioconductor RELEASE_3_19 (2024-05-15, Wed)
+
 # ChIPseeker 1.38.0
 
 + Bioconductor RELEASE_3_18 (2023-10-25, Wed)
 
-# ChIPseeker\n\n+ Bioconductor RELEASE_3_17 (2023-05-03, Wed)\n
+# ChIPseeker 1.36.0
+
++ Bioconductor RELEASE_3_17 (2023-05-03, Wed)
+
 # ChIPseeker 1.35.3
 
 + fixed R check by removing calling `BiocStyle::Biocpkg()` in vignette, instead we use `yulab.utils::Biocpkg()` (2023-04-11, Tue)

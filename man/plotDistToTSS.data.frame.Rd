@@ -7,10 +7,12 @@
 plotDistToTSS.data.frame(
   peakDist,
   distanceColumn = "distanceToTSS",
+  distanceBreaks = c(0, 1000, 3000, 5000, 10000, 1e+05),
+  palette = NULL,
   xlab = "",
   ylab = "Binding sites (\%) (5'->3')",
   title = "Distribution of transcription factor-binding loci relative to TSS",
-  categoryColumn
+  categoryColumn = ".id"
 )
 }
 \arguments{
@@ -18,13 +20,17 @@ plotDistToTSS.data.frame(
 
 \item{distanceColumn}{column name of the distance from peak to nearest gene}
 
+\item{distanceBreaks}{default is 'c(0, 1000, 3000, 5000, 10000, 100000)'}
+
+\item{palette}{palette name for coloring different distances. Run `RColorBrewer::display.brewer.all()` to see all applicable values.}
+
 \item{xlab}{x label}
 
 \item{ylab}{y lable}
 
 \item{title}{figure title}
 
-\item{categoryColumn}{category column}
+\item{categoryColumn}{category column, default is ".id"}
 }
 \value{
 bar plot that summarize distance from peak to

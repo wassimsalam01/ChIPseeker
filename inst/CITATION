@@ -3,18 +3,18 @@ citHeader("Please cite Q. Wang (2022) or G. Yu (2015) for using ChIPseeker. In a
 
 citEntry(entry  ="ARTICLE",
          title  = "Exploring epigenomic datasets by ChIPseeker",
-         author = personList(
-             as.person("Qianwen Wang"),
-             as.person("Ming Li"),
-             as.person("Tianzhi Wu"),
-             as.person("Li Zhan"),
-             as.person("Lin Li"),
-             as.person("Meijun Chen"),
-             as.person("Wenqin Xie"),
-             as.person("Zijing Xie"),
-             as.person("Erqiang Hu"),
-             as.person("Shuangbin Xu"),
-             as.person("Guangchuang Yu")
+         author = c(
+             person("Qianwen", "Wang"),
+             person("Ming", "Li"),
+             person("Tianzhi", "Wu"),
+             person("Li", "Zhan"),
+             person("Lin", "Li"),
+             person("Meijun", "Chen"),
+             person("Wenqin", "Xie"),
+             person("Zijing", "Xie"),
+             person("Erqiang", "Hu"),
+             person("Shuangbin", "Xu"),
+             person("Guangchuang", "Yu", email = "guangchuangyu@gmail.com")
              ),
          journal = "Current Protocols",
          year    = "2022",
@@ -44,7 +44,7 @@ citEntry(entry  ="ARTICLE",
          pages   = "2382-2383",
          PMID    = "25765347",
          doi     = "10.1093/bioinformatics/btv145",
-         textVersion = paste("Guangchuang Yu, Li-Gen Wang, and Qing-Yu He.",
+         textVersion = paste("Guangchuang Yu, LiGen Wang, and QingYu He.",
              "ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization.",
-             "Bioinformatics 2015, 31(14):2382-2383")
+             "Bioinformatics 2015, 31(14):23822383")
          )

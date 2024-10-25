@@ -22,6 +22,8 @@ plotDistToTSS(
   xlab = "",
   ylab = "Binding sites (\%) (5'->3')",
   title = "Distribution of transcription factor-binding loci relative to TSS",
+  distanceBreaks = c(0, 1000, 3000, 5000, 10000, 1e+05),
+  palette = NULL,
   ...
 )
 
@@ -41,6 +43,10 @@ title="Distribution of transcription factor-binding loci relative to TSS",...)
 \item{title}{title}
 
 \item{...}{additional parameter}
+
+\item{distanceBreaks}{breaks of distance, default is 'c(0, 1000, 3000, 5000, 10000, 100000)'}
+
+\item{palette}{palette name for coloring different distances. Run `RColorBrewer::display.brewer.all()` to see all applicable values.}
 }
 \value{
 plot

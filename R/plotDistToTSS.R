@@ -1,3 +1,69 @@
+merge_two_si = function(x1, x2){
+  if (length(unique(gsub("^[0-9]+","",c(x1, x2)))) == 1){
+    return(paste0(gsub("[^0-9]*$","",x1), "-", x2))
+  } else {
+    return(paste0(x1, "-", x2))
+  }
+}
+
+generate_break_lbs = function(breaks) {
+  lbs = c()
+  
+  # break labels
+  break_labels = scales::label_number(scale_cut = scales::cut_si(unit = "b"))(breaks)
+  break_labels = gsub(" b$"," bp", break_labels)
+
+  # category labels
+  for (i in 2:length(breaks)) {
+    if (i == length(breaks)) {
+      lbs = c(lbs, paste0(">", break_labels[i-1]))
+    } else {
+      lbs = c(lbs, merge_two_si(break_labels[i-1], break_labels[i]))
+    }
+  }
+  
+  return(lbs)
+}
+
+generate_colors = function(palette = NULL, n) {
+  # old color in version <= 1.41.1
+  old_color = c("#9ecae1", "#3182bd", "#C7A76C", "#86B875", "#39BEB1", "#CD99D8")
+  if (is.null(palette)){
+    brewer_cols = old_color
+  } else if (length(palette) == 1 && is_valid_palette(palette)){
+    brewer_cols = RColorBrewer::brewer.pal(
+      name = palette, 
+      n = RColorBrewer::brewer.pal.info[palette, "maxcolors"]
+    ) |> rev()     
+  } else if (all(is_valid_color(palette))){
+    brewer_cols = palette
+  }
+  else {
+    warning("Your palette is non-valid, switching to default...")
+    brewer_cols = old_color
+  }
+  
+  if (length(brewer_cols) >= n) {
+    cols = brewer_cols[1:length(brewer_cols)]
+  } else {
+    cols = grDevices::colorRampPalette(brewer_cols)(n)
+  }
+  
+  return(cols)
+}
+
+is_valid_palette = function(palette){
+  palette %in% rownames(RColorBrewer::brewer.pal.info)
+}
+
+is_valid_color = function(color){
+  tryCatch({
+    grDevices::col2rgb(color)
+    TRUE
+  }, error = function(e) {
+    FALSE
+  })
+}
 
 ##' plot feature distribution based on the distances to the TSS
 ##'
@@ -5,10 +71,12 @@
 ##' @title plotDistToTSS.data.frame
 ##' @param peakDist peak annotation
 ##' @param distanceColumn column name of the distance from peak to nearest gene
+##' @param distanceBreaks default is 'c(0, 1000, 3000, 5000, 10000, 100000)'
+##' @param palette palette name for coloring different distances. Run `RColorBrewer::display.brewer.all()` to see all applicable values.
 ##' @param xlab x label
 ##' @param ylab y lable
 ##' @param title figure title
-##' @param categoryColumn category column
+##' @param categoryColumn category column, default is ".id"
 ##' @return bar plot that summarize distance from peak to
 ##' TSS of the nearest gene.
 ##' @importFrom magrittr %<>%
@@ -29,6 +97,7 @@
 ##' @importFrom ggplot2 scale_fill_hue
 ##' @importFrom ggplot2 scale_fill_manual
 ##' @importFrom ggplot2 geom_text
+##' @importFrom rlang .data
 ##' @examples
 ##' \dontrun{
 ##' require(TxDb.Hsapiens.UCSC.hg19.knownGene)
@@ -41,42 +110,36 @@
 ##' @author Guangchuang Yu \url{https://guangchuangyu.github.io}
 plotDistToTSS.data.frame <- function(peakDist,
                                      distanceColumn="distanceToTSS",
+                                     distanceBreaks=c(0, 1000, 3000, 5000, 10000, 100000),
+                                     palette = NULL,
                                      xlab="",
                                      ylab="Binding sites (%) (5'->3')",
                                      title="Distribution of transcription factor-binding loci relative to TSS",
-                                     categoryColumn) {
+                                     categoryColumn = ".id") {
 
-    ## to satisfy codetools
-    Feature <- freq <- .id <- NULL
-
-    ## assign Feature according to the distancetoFeature
-    peakDist$Feature <- NA
-    limit <- c(0, 1000, 3000, 5000, 10000, 100000)
-    lbs <- c("0-1kb", "1-3kb", "3-5kb", "5-10kb", "10-100kb", ">100kb")
-    for (i in 1:length(limit)) {
-        if (i < length(limit)) {
-            peakDist$Feature[ abs(peakDist[, distanceColumn]) >= limit[i] & abs(peakDist[,distanceColumn]) < limit[i+1] ] <- lbs[i]
-	} else {
-            peakDist$Feature[abs(peakDist[,distanceColumn]) > limit[i]] <- lbs[i]
-	}
-    }
-    peakDist$Feature <- factor(peakDist$Feature, levels=lbs)
+    distanceBreaks = sort(distanceBreaks)
+    hasZero = sum(distanceBreaks == 0)
+    if (!hasZero) distanceBreaks = c(0, distanceBreaks)
+    hasInf = sum(is.infinite(distanceBreaks))
+    if (!hasInf) distanceBreaks = c(distanceBreaks, Inf)
+    lbs = generate_break_lbs(distanceBreaks)
+    peakDist$Feature = cut(abs(peakDist[[distanceColumn]]), 
+                           breaks = distanceBreaks,
+                           labels = lbs,
+                           include.lowest = TRUE)
 
     ## sign containing -1 and 1 for upstream and downstream
     peakDist$sign <- sign(peakDist[,distanceColumn])
 
     ## count frequencies
     if (categoryColumn == 1) {
-        peakDist %<>% group_by(Feature, sign) %>%
-            summarise(freq = length(Feature))
-
-        peakDist$freq = peakDist$freq/sum(peakDist$freq)
-        peakDist$freq = peakDist$freq * 100
+      peakDist = peakDist |> 
+        summarise(freq = length(.data$Feature), .by = c("Feature", "sign")) |> 
+        mutate(freq = .data$freq/sum(.data$freq) * 100)
     } else {
-        peakDist %<>% group_by(.id, Feature, sign) %>%
-            summarise(freq = length(Feature)) %>%
-                group_by(.id) %>%
-                    mutate(freq = freq/sum(freq) * 100)
+      peakDist = peakDist |> 
+        summarise(freq = length(.data$Feature), .by = c(categoryColumn, "Feature", "sign")) |> 
+        mutate(freq = .data$freq/sum(.data$freq) * 100, .by = categoryColumn)
     }
 
     if (any(peakDist$sign == 0)) {
@@ -89,16 +152,16 @@ plotDistToTSS.data.frame <- function(peakDist,
     }
 
     if (categoryColumn == 1) {
-        peakDist %<>% group_by(Feature, sign) %>%
-            summarise(freq = sum(freq))
+        peakDist %<>% group_by(.data$Feature, .data$sign) %>%
+            summarise(freq = sum(.data$freq))
 
-        totalFreq <- peakDist %>% group_by(sign) %>%
-            summarise(total = sum(freq))
+        totalFreq <- peakDist %>% group_by(.data$sign) %>%
+            summarise(total = sum(.data$freq))
     } else {
-        peakDist %<>% group_by(.id, Feature, sign) %>%
-            summarise(freq = sum(freq))
-        totalFreq <- peakDist %>% group_by(.id, sign) %>%
-            summarise(total = sum(freq))
+        peakDist %<>% group_by(.data$.id, .data$Feature, .data$sign) %>%
+            summarise(freq = sum(.data$freq))
+        totalFreq <- peakDist %>% group_by(.data$.id, .data$sign) %>%
+            summarise(total = sum(.data$freq))
     }
 
 
@@ -113,13 +176,13 @@ plotDistToTSS.data.frame <- function(peakDist,
 
     peakDist$Feature <- factor(peakDist$Feature, levels=rev(levels(peakDist$Feature)))
     if (categoryColumn == 1) {
-        p <- ggplot(peakDist, aes(x=1, fill=Feature))
+        p <- ggplot(peakDist, aes(x=1, fill=.data$Feature))
     } else {
-        p <- ggplot(peakDist, aes_string(x=categoryColumn, fill="Feature"))
+        p <- ggplot(peakDist, aes(x=.data[[categoryColumn]], fill=.data$Feature))
     }
 
-    p <- p + geom_bar(data=subset(peakDist, sign==1), aes(y=freq), stat="identity") +
-        geom_bar(data=subset(peakDist, sign==-1), aes(y=-freq), stat="identity")
+    p <- p + geom_bar(data=subset(peakDist, sign==1), aes(y=.data$freq), stat="identity") +
+        geom_bar(data=subset(peakDist, sign==-1), aes(y=-.data$freq), stat="identity")
 
     p <- p + geom_hline(yintercept = 0, colour = "black") +
         coord_flip() + theme_bw() +
@@ -131,12 +194,8 @@ plotDistToTSS.data.frame <- function(peakDist,
         p <- p + scale_x_continuous(breaks=NULL)
     }
 
-    cols <- c("#9ecae1", "#3182bd", "#C7A76C", "#86B875", "#39BEB1", "#CD99D8")
-    ## p <- p + scale_fill_hue("Feature", breaks=lbs, labels=lbs)
-    ## p <- p + scale_fill_manual(values=getCols(length(lbs)), breaks=lbs, labels=lbs)
-    p <- p + scale_fill_manual(values=rev(cols), breaks=rev(lbs), labels=rev(lbs), guide=guide_legend(reverse=TRUE))
+    cols <- generate_colors(palette = palette, n = length(lbs))
+    p <- p + scale_fill_manual(values=rev(cols), guide=guide_legend(reverse=TRUE))
 
     return(p)
 }
-
-

@@ -1950,16 +1950,7 @@ peakHeatmap.internal <- function(tagMatrix,
                                            upstream))
   }else{
     
-    p <- p + scale_x_continuous(breaks = c(1,
-                                           floor(downstream*0.5),
-                                           (downstream + 1),
-                                           (downstream + 1 + floor(upstream * 0.5)), 
-                                           upstream+downstream+1),
-                                labels = c((-1*downstream),
-                                           floor(-1*downstream*0.5),
-                                           0,
-                                           floor(upstream*0.5),
-                                           upstream))    
+    p <- p + scale_x_continuous(labels = function(x) x - upstream)    
     
   }
   
